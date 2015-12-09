@@ -24,6 +24,11 @@ public class ClientSock implements Runnable {
     final int port = 18524;
     PrintWriter out;
     BufferedReader in;
+    double[] prob;
+    
+    public ClientSock(double[] prob){
+        this.prob = prob;
+    }
 
     @Override
     public void run() {
@@ -34,11 +39,29 @@ public class ClientSock implements Runnable {
             out = new PrintWriter(sock.getOutputStream(), true);
             in = new BufferedReader(
                     new InputStreamReader(sock.getInputStream()));
-            while(true);
+            int num = 0;
+            while(num<100){
+                int numX = genX();
+                System.out.println("Client <name>: sending "+numX);
+                out.println(numX);
+                out.flush();
+                num++;
+            }
 
         } catch (IOException ex) {
             Logger.getLogger(SearchClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    private int genX(){
+        double rand = Math.random();
+        int ans = -1;
+        for (int i = 0; i < prob.length; i++) {
+            if (rand < prob[i]){
+                ans = i+1;
+                i = prob.length;
+            }
+        }
+        return ans;
     }
 
 }

@@ -5,17 +5,82 @@
  */
 package searchclient;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author roy
  */
 public class SearchClient {
 
+    static int r = 6;
+    static String probFileName = "prob.txt";
+    static double prob[];
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        if (args.length == 2) {
+            parse(args);
+        } else {
+            System.out.println("no arguments received");
+            parse(null);
+            //  return;
+        }
+        ClientSock cs = new ClientSock(prob);
+        (new Thread(cs)).start();
+
     }
-    
+
+    private static void parse(String[] args) {
+        if (args != null) {
+            r = new Integer(args[0]);
+            probFileName = args[1];
+        }
+        BufferedReader br = null;
+        try {
+            FileReader file = new FileReader(probFileName);
+
+            if (!file.ready()) {
+                System.out.println("file no found");
+                System.exit(0);
+            }
+
+            br = new BufferedReader(file);
+            prob = new double[r];
+            String cline;
+            String line = "";
+            while ((cline = br.readLine()) != null) {
+                line = line + cline;
+            }
+            String[] parts = line.split(",");
+            double count = 0;
+            for (int i = 0; i < parts.length-1; i++) {
+                count +=Double.parseDouble(parts[i]);
+                prob[i] = count;
+            }
+            prob[prob.length-1] = 1;
+            for (int i = 0; i < prob.length; i++) {
+                System.out.println(prob[i]);
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(SearchClient.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(SearchClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
 }
