@@ -45,6 +45,8 @@ public class ClientSock implements Runnable {
                 System.out.println("Client <name>: sending "+numX);
                 out.println(numX);
                 out.flush();
+                String msg = in.readLine();
+                System.out.println("Client <name>: got reply "+msg+" for query "+numX);
                 num++;
             }
 
