@@ -18,9 +18,10 @@ import java.util.logging.Logger;
  */
 public class SearchClient {
 
-    static int r = 6;
+    static int r = 70;
     static String probFileName = "prob.txt";
     static double prob[];
+    static boolean forTest = true;
 
     /**
      * @param args the command line arguments
@@ -33,8 +34,10 @@ public class SearchClient {
             parse(null);
             //  return;
         }
+        
         ClientSock cs = new ClientSock(prob);
         (new Thread(cs)).start();
+
 
     }
 
@@ -61,7 +64,7 @@ public class SearchClient {
             }
             String[] parts = line.split(",");
             double count = 0;
-            for (int i = 0; i < parts.length-1; i++) {
+            for (int i = 0; i < SearchClient.r; i++) {
                 count +=Double.parseDouble(parts[i]);
                 prob[i] = count;
             }
